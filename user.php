@@ -1,130 +1,105 @@
 <?php
 require_once('config.php');
-if (!isset($_SESSION['user'])) {
+if(!isset($_SESSION['user'])){
     header("location:login.php");
-}
+    }
+require_once("action.php");
+
+//4448317948
+//29204706
+
+$scores=getScore();
+
 ?>
+
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <link rel="stylesheet" href="prime.css">
-    <link
-      href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="index.css">
+    <title>Task List and Scoreboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <?php require_once('navbar.php') ?>
-
-
-    <div class="ps">
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
-
-
-<div class="container">
-<div class="col-md-12 col-12 col-sm-12">
-    <div class="card">
-      <div class="card-header">
-        <h4>Task Details</h4>
-      </div>
-      <div class="card-body">
-        <div class="table-responsive">
-          <table class="table table-striped">
-            <tbody><tr>
-              <th class="text-center">
-                <div class="custom-checkbox custom-checkbox-table custom-control">
-                  <input type="checkbox" data-checkboxes="mygroup" data-checkbox-role="dad" class="custom-control-input" id="checkbox-all">
-                  <label for="checkbox-all" class="custom-control-label">&nbsp;</label>
+<?php require_once('navbar.php') ?>
+<?php if($_SESSION['user']['verified'] !== 'true'){ ?>
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="text-center">
+            <h1 class="display-4 mb-4">Verify Your Account</h1>
+            <p class="lead mb-4">Please enter the code sent to your email to verify your account.</p>
+            <form method="POST">
+                <div class="mb-3">
+                    <input type="text" class="form-control form-control-lg text-center" name="code" placeholder="Enter verification code" required>
                 </div>
-              </th>
-              <th>Task Name</th>
-              <th>POINT</th>
-             
-              <th>Action</th>
-            </tr>
-            <tr>
-              <td class="p-0 text-center">
-                <div class="custom-checkbox custom-control">
-                  <input type="checkbox" data-checkboxes="mygroup" class="custom-control-input" id="checkbox-1">
-                  <label for="checkbox-1" class="custom-control-label">&nbsp;</label>
-                </div>
-              </td>
-              <td>FOLLOW US ON TWITTER</td>
-              <td class="align-middle">
-                20%
-              </td>
-            
-              <td>
-                <a class="btn btn-primary btn-action mr-1" data-toggle="tooltip" title="" data-original-title="Edit"><i class="fas fa-pencil-alt"></i></a>
-              </td>
-            </tr>
-          
-          </tbody></table>
+                <button type="submit" class="btn btn-primary btn-lg w-100" name="verify">Verify</button>
+            </form>
         </div>
-      </div>
-    </div>
-  </div>
-</div>
+    </div><a href="mail.php">send</a>
+<?php }else{ ?>
 
-
-        
-            <main>
-            <div id="header">
-                <h1>Ranking</h1>
-                <button class="share">
-                <i class="ph ph-share-network"></i>
-                </button>
-            </div>
-            <div id="leaderboard">
-                <div class="ribbon"></div>
-                <table>
-                <tr class="gn">
-                    <td class="number">1</td>
-                    <td class="name">Lee Taeyong</td>
-                    <td class="points">
-                    258.244 <img class="gold-medal" src="https://github.com/malunaridev/Challenges-iCodeThis/blob/master/4-leaderboard/assets/gold-medal.png?raw=true" alt="gold medal"/>
-                    </td>
-                </tr>
-                <tr>
-                    <td class="number">2</td>
-                    <td class="name">Mark Lee</td>
-                    <td class="points">258.242</td>
-                </tr>
-                <tr>
-                    <td class="number">3</td>
-                    <td class="name">Xiao Dejun</td>
-                    <td class="points">258.223</td>
-                </tr>
-                <tr>
-                    <td class="number">4</td>
-                    <td class="name">Qian Kun</td>
-                    <td class="points">258.212</td>
-                </tr>
-                <tr>
-                    <td class="number">5</td>
-                    <td class="name">Johnny Suh</td>
-                    <td class="points">258.208</td>
-                </tr>
-                </table>
-                <div id="buttons">
-                <button class="exit">Exit</button>
-                <button class="continue">Continue</button>
+    
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Task List and Scoreboard</h1>
+        <div class="d-flex justify-content-between">
+            <!-- Task List -->
+            <div class="flex-grow-1 me-4">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Tasks</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Follow Us On Twitter</h6>
+                                <p class="mb-0 text-muted">Working On it</p>
+                            </div>
+                            
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Task 2</h6>
+                                <p class="mb-0 text-muted">Description of Task 2</p>
+                            </div>
+                            
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Refer us</h6>
+                                <p class="mb-0 text-muted">http://localhost/tryEmeka/index.php?referid=<?php echo $_SESSION['user']['id'] ?>&user_id=<?php echo $_SESSION['user']['id']?></p>
+                            </div>
+                           
+                        </li>
+                       
+                    </ul>
                 </div>
             </div>
-            </main>
 
+            <!-- Scoreboard -->
+            <div class="flex-shrink-0" style="width: 300px;">
+                <div class="card shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">Scoreboard</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                       <?php foreach($scores as $score){?>
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center <?php if($score['id']===$_SESSION['user']['id']){echo 'bg-primary';}?>">
+                            <div><?php echo $score['name']?></div>
+                            <span class="badge bg-success rounded-pill"><?php echo $score['points']?></span>
+                        </li>
+                    <?php   } ?>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
+<?php } ?>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
 </body>
 </html>

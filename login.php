@@ -1,6 +1,9 @@
 <?php
 require_once("config.php");
 require_once('auth.php');
+if(isset($_SESSION['user'])){
+header("location:user.php");
+}
 ?>
 
 <!DOCTYPE html>

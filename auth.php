@@ -6,6 +6,9 @@ $name='';
 $email='';
 $password='';
 
+
+
+
 function signup(){
     global $error,$name,$email,$password,$connect;
 
@@ -47,15 +50,27 @@ function signup(){
             $error['gen']="User Name Of Email Already Exist";
 
         }else{
-            
-      $insert="INSERT INTO user(name,email,password) VALUES('$name','$email','$password')";
+           
+      $insert="INSERT INTO user(name,email,password,verified,points) VALUES('$name','$email','$password','false',5)";
       $query=mysqli_query($connect,$insert);
-      if ($query) {
+     
+      if(isset($_REQUEST['referid'])){
+        $ref=$_REQUEST['referid'];
+
+        $sef="SELECT * FROM user WHERE id='$ref' LIMIT 1 ";
+        $fg=mysqli_query($connect,$sef);
+        $ed=mysqli_fetch_assoc($fg);
+        $fb=$ed['points']+5;
+
+        $update="UPDATE user SET points='$fb' WHERE id='$ref'";
+        mysqli_query($connect,$update);
+     }
+       if ($query) {
         $error['gen']="Your Are Good";
-        $lId=mysqli_insert_id($connect);
-        $user=logI($lId);
+      
+        $user=logI($email);
         $_SESSION['user']=$user;    
-        header("location:user.php");
+        header("location:mail.php");
       }else{
         $error['gen']="Your Are Bad";
       }  
@@ -107,9 +122,9 @@ function login(){
     }
 }
 
-function logI($id) {
+function logI($email) {
     global $connect;
-    $select="SELECT name,email,date FROM user WHERE id='$id' LIMIT 1";
+    $select="SELECT id,name,email,date,verified,points FROM user WHERE email='$email' LIMIT 1";
     $query=mysqli_query($connect,$select);
     $result=mysqli_fetch_assoc($query);
     return $result;

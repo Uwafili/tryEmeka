@@ -39,7 +39,7 @@ if (isset($_SESSION['user'])) {?>
       </ul>
 <?php }else{?>
   <li class="nav-item">
-          <a class="nav-link" href="index.php">Login</a>
+          <a class="nav-link" href="login.php">Login</a>
         </li>
         
 <?php }
